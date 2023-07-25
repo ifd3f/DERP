@@ -10,7 +10,7 @@ class Purchase(models.Model):
     A purchase of a kind of item for a project.
     """
 
-    purchase_date = models.DateTimeField(auto_now_add=True)
+    purchase_date = models.DateTimeField()
 
     item = models.ForeignKey("ItemKind", on_delete=models.PROTECT)
 
@@ -18,9 +18,20 @@ class Purchase(models.Model):
     actual_price = models.FloatField()
     supplier = models.URLField()
 
-    category = models.ForeignKey("Category", on_delete=models.PROTECT)
+    cost_center = models.ForeignKey("CostCenter", null=False, on_delete=models.PROTECT)
 
-    purchaser = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    purchaser = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL)
+
+
+class Funding(models.Model):
+    """
+    A one-time funding transaction.
+    """
+
+    name = models.CharField(max_length=MAX_NAME_LENGTH)
+    cost_center = models.ForeignKey("CostCenter", null=False, on_delete=models.PROTECT)
+    funding_date = models.DateTimeField()
+    credit = models.FloatField()
 
 
 class ItemKind(models.Model):
@@ -32,11 +43,11 @@ class ItemKind(models.Model):
     description = models.TextField()
 
 
-class Category(models.Model):
+class CostCenter(models.Model):
     """
-    A category of purchase.
+    A cost center for purchases.
     """
 
     name = models.CharField(max_length=MAX_NAME_LENGTH)
     description = models.TextField()
-    parent = models.ForeignKey("Category", null=True, on_delete=models.SET_NULL)
+    parent = models.ForeignKey("CostCenter", null=True, on_delete=models.SET_NULL)

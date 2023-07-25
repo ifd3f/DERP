@@ -1,0 +1,26 @@
+{% if transactions %}
+    <table>
+        <thead>
+            <th>
+                <th>Date</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Category</th>
+                <th>Balance</th>
+            </th>
+        </thead>
+        <tbody>
+            {% for t in transactions %}
+                <tr>
+                    <td>{{ t.date }}</td>
+                    <td>{{ t.name }}</td>
+                    <td>{{ t.price }}</td>
+                    <td>{{ t.category }}</td>
+                    <td>{{ t.balance }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>No transactions are available.</p>
+{% endif %}
