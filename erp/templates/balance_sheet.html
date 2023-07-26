@@ -4,8 +4,8 @@
             <tr>
                 <th>Date</th>
                 <th>Name</th>
-                <th>Price</th>
                 <th>Cost Center</th>
+                <th>Price</th>
                 <th>Balance</th>
             </tr>
         </thead>
@@ -14,8 +14,8 @@
                 <tr>
                     <td>{{ t.date }}</td>
                     <td><a href="{{ t.href | urlencode }}">{{ t.name }}</a></td>
+                    <td><a href="/cost-centers/{{ t.cost_center_id }}">{{ t.cost_center }}</a></td>
                     <td>{{ t.price }}</td>
-                    <td>{{ t.cost_center }}</td>
                     <td>{{ t.balance }}</td>
                 </tr>
             {% endfor %}

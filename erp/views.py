@@ -13,8 +13,8 @@ class TransactionRow(NamedTuple):
     cost_center: str
     cost_center_id: int
     price: float
-    balance: float
     href: str
+    balance: float
 
 
 def home(request: HttpRequest):
@@ -47,47 +47,52 @@ def query_balance_sheet(root_cost_center: CostCenter):
     that cost center and all of its children.
     """
 
-    purchases = (
-        Purchase.objects.filter(cost_center__path__startswith=root_cost_center.path)
-        .values()
-        .annotate(
-            date=F("purchase_date"),
-            name=ExpressionWrapper(
-                Concat(F("item__name"), Value(" x"), F("quantity")),
-                output_field=CharField(),
-            ),
-            cost_center=F("cost_center__name"),
-            cost_center_id=F("cost_center__id"),
-            price=-F("actual_price"),
-            href=ExpressionWrapper(
-                Concat(Value("/purchases/"), F("pk")), output_field=CharField()
-            ),
-        )
-        .values("date", "name", "cost_center", "cost_center_id", "price", "href")
+    purchases = Purchase.objects.filter(
+        cost_center__path__startswith=root_cost_center.path
+    ).values(
+        t_date=F("purchase_date"),
+        t_name=ExpressionWrapper(
+            Concat(F("item__name"), Value(" x"), F("quantity")),
+            output_field=CharField(),
+        ),
+        t_cost_center=F("cost_center__name"),
+        t_cost_center_id=F("cost_center__id"),
+        t_price=-F("actual_price"),
+        t_href=ExpressionWrapper(
+            Concat(Value("/purchases/"), F("pk")), output_field=CharField()
+        ),
     )
 
-    fundings = (
-        Funding.objects.filter(cost_center__path__startswith=root_cost_center.path)
-        .annotate(
-            date=F("funding_date"),
-            name=F("name"),
-            cost_center=F("cost_center__name"),
-            cost_center_id=F("cost_center__id"),
-            price=F("credit"),
-            href=ExpressionWrapper(
-                Concat(Value("/fundings/"), F("pk")), output_field=CharField()
-            ),
-        )
-        .values("date", "name", "cost_center", "cost_center_id", "price", "href")
+    fundings = Funding.objects.filter(
+        cost_center__path__startswith=root_cost_center.path
+    ).values(
+        t_date=F("funding_date"),
+        t_name=F("name"),
+        t_cost_center=F("cost_center__name"),
+        t_cost_center_id=F("cost_center__id"),
+        t_price=F("credit"),
+        t_href=ExpressionWrapper(
+            Concat(Value("/fundings/"), F("pk")), output_field=CharField()
+        ),
     )
 
-    raw_rows = purchases.union(fundings).order_by("date")
+    raw_rows = purchases.union(fundings).order_by("t_date")
 
     # Calculate a cumulative sum
     csum = 0
     rows = []
     for r in raw_rows:
-        csum += r["price"]
-        rows.append(TransactionRow(**r, balance=csum))
+        csum += r["t_price"]
+        rows.append(
+            TransactionRow(
+                date=r["t_date"],
+                name=r["t_name"],
+                cost_center=r["t_cost_center"],
+                cost_center_id=r["t_cost_center_id"],
+                price=r["t_price"],
+                href=r["t_href"],
+                balance=csum,
+            )
+        )
 
     return rows
