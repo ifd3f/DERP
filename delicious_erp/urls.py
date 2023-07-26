@@ -16,6 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+import erp.views as erp
+
+
 urlpatterns = [
+    path('', erp.balance_sheet),
     path('admin/', admin.site.urls),
 ]

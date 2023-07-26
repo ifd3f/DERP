@@ -1,21 +1,21 @@
 {% if transactions %}
     <table>
         <thead>
-            <th>
+            <tr>
                 <th>Date</th>
                 <th>Name</th>
                 <th>Price</th>
-                <th>Category</th>
+                <th>Cost Center</th>
                 <th>Balance</th>
-            </th>
+            </tr>
         </thead>
         <tbody>
             {% for t in transactions %}
                 <tr>
                     <td>{{ t.date }}</td>
-                    <td>{{ t.name }}</td>
+                    <td><a href="{{ t.href | urlencode }}">{{ t.name }}</a></td>
                     <td>{{ t.price }}</td>
-                    <td>{{ t.category }}</td>
+                    <td>{{ t.cost_center }}</td>
                     <td>{{ t.balance }}</td>
                 </tr>
             {% endfor %}
