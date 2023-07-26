@@ -20,6 +20,7 @@ import erp.views as erp
 
 
 urlpatterns = [
-    path('', erp.balance_sheet),
+    path('', erp.home),
+    path('cost-centers/<int:i>', erp.cost_center),
     path('admin/', admin.site.urls),
 ]

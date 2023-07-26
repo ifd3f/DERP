@@ -19,7 +19,11 @@
           poetry2nix.overrides.withDefaults (final: prev: {
             django-admin = prev.django-admin.overrideAttrs
               (oldAttrs: { buildInputs = [ prev.setuptools ]; });
+            django-computedfields = prev.django-computedfields.overrideAttrs
+              (oldAttrs: { buildInputs = [ prev.setuptools ]; });
             django-excel-response2 = prev.django-excel-response2.overrideAttrs
+              (oldAttrs: { buildInputs = [ prev.setuptools ]; });
+            django-fast-update = prev.django-fast-update.overrideAttrs
               (oldAttrs: { buildInputs = [ prev.setuptools ]; });
             django-six = prev.django-six.overrideAttrs
               (oldAttrs: { buildInputs = [ prev.setuptools ]; });

@@ -1,0 +1,18 @@
+{% extends "base_standard.html" %}
+
+{% block content %}
+    <p>Welcome to Delicious ERP!</p>
+
+    <div>
+        <h2>Top-Level Cost Centers</h2>
+        {% if root_cost_centers %}
+            <ul>
+                {% for c in root_cost_centers %}
+                    <li><a href="/cost-centers/{{ c.id }}">{{ c.name }}</a></li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No cost centers exist. Perhaps you should create one?</p>
+        {% endif %}
+    </div>
+{% endblock %}

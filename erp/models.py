@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from computedfields.models import ComputedFieldsModel, computed, compute
 
 
 MAX_NAME_LENGTH = 64
@@ -20,7 +21,9 @@ class Purchase(models.Model):
 
     cost_center = models.ForeignKey("CostCenter", null=False, on_delete=models.PROTECT)
 
-    purchaser = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL)
+    purchaser = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL
+    )
 
 
 class Funding(models.Model):
@@ -43,11 +46,20 @@ class ItemKind(models.Model):
     description = models.TextField()
 
 
-class CostCenter(models.Model):
+class CostCenter(ComputedFieldsModel):
     """
     A cost center for purchases.
     """
 
     name = models.CharField(max_length=MAX_NAME_LENGTH)
     description = models.TextField()
-    parent = models.ForeignKey("CostCenter", null=True, on_delete=models.SET_NULL)
+    parent = models.ForeignKey("CostCenter", null=True, on_delete=models.SET_NULL, related_name='children')
+
+    @computed(models.CharField(max_length=128), depends=[("self", ["parent", "id"])])
+    def path(self):
+        """
+        A string of ID's separated by slashes.
+
+        This improves efficiency for computing recursive cost centers.
+        """
+        return str(self.id) if self.parent is None else f"{self.parent.id}/{self.id}"

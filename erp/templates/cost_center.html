@@ -1,0 +1,23 @@
+{% extends "base_standard.html" %}
+
+{% block content %}
+    <div>
+        <h2>Children</h2>
+        {% with children=cost_center.children.all %}
+            {% if children %}
+                <ul>
+                    {% for c in children %}
+                        <li><a href="/cost-centers/{{ c.id }}">{{ c.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>This cost center has no children.</p>
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <div>
+        <h2>Transactions</h2>
+        {% include "balance_sheet.html" %}
+    </div>
+{% endblock %}

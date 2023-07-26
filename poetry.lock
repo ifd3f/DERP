@@ -49,6 +49,21 @@ argon2 = ["argon2-cffi (>=19.1.0)"]
 bcrypt = ["bcrypt"]
 
 [[package]]
+name = "django-computedfields"
+version = "0.2.3"
+description = "autoupdated database fields for model methods"
+optional = false
+python-versions = "*"
+files = [
+    {file = "django-computedfields-0.2.3.tar.gz", hash = "sha256:abc99b603b66bb7c627df1ba104fc5fbc8ec15d1ec2272e2c7b44ec18b2631a4"},
+]
+
+[package.dependencies]
+Django = ">=2.2,<5.0"
+django-fast-update = "*"
+typing_extensions = ">=4.1"
+
+[[package]]
 name = "django-extensions"
 version = "3.2.3"
 description = "Extensions for Django"
@@ -57,6 +72,19 @@ python-versions = ">=3.6"
 files = [
     {file = "django-extensions-3.2.3.tar.gz", hash = "sha256:44d27919d04e23b3f40231c4ab7af4e61ce832ef46d610cc650d53e68328410a"},
     {file = "django_extensions-3.2.3-py3-none-any.whl", hash = "sha256:9600b7562f79a92cbf1fde6403c04fee314608fefbb595502e34383ae8203401"},
+]
+
+[package.dependencies]
+Django = ">=3.2"
+
+[[package]]
+name = "django-fast-update"
+version = "0.2.3"
+description = "Faster db updates for Django using UPDATE FROM VALUES sql variants."
+optional = false
+python-versions = "*"
+files = [
+    {file = "django-fast-update-0.2.3.tar.gz", hash = "sha256:76ad711a1dc193e20233458d584e51ad6d354663b8952ada768eec1d997abc3c"},
 ]
 
 [package.dependencies]
@@ -187,4 +215,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "2d31aff7eeeca00b24dcd9ec30ca52bdff6781f9ca5ed4e09c698272a0732154"
+content-hash = "d08b55763ddd9a1c88dfe74c2bdf4b0a924f53f02f6e94c65be86939d6fba4cb"
