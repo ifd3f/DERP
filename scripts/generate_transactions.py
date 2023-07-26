@@ -31,10 +31,10 @@ def run():
         days_before = random.random() * 365 * 3
         date = now - timedelta(days=days_before)
         Funding.objects.create(
-            name="Test Funding",
+            name=f"Funding {i}",
             funding_date=date,
             cost_center=random.choice(ccs),
-            credit=random.random() * 100,
+            credit=random.random() * 2000,
         )
 
 def make_item_kinds():
