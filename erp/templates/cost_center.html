@@ -18,6 +18,6 @@
 
     <div>
         <h2>Transactions</h2>
-        {% include "balance_sheet.html" %}
+        {% include "balance_sheet.html" with transactions=transactions only %}
     </div>
 {% endblock %}
