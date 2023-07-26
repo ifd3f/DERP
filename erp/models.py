@@ -1,3 +1,6 @@
+from typing import Iterable, NamedTuple
+from datetime import datetime
+
 from django.conf import settings
 from django.db import models, transaction
 from computedfields.models import (
@@ -101,3 +104,67 @@ class CostCenter(models.Model):
 
     def __repr__(self):
         return f"Cost Center {self.name} ({self.id})"
+
+    def query_balance_sheet(self) -> Iterable['TransactionRow']:
+        """
+        Returns the balance sheet for all transactions in
+        this cost center and all of its children.
+        """
+
+        from django.db.models import F, Value, ExpressionWrapper, CharField, Sum
+        from django.db.models.functions import Concat
+
+        purchases = Purchase.objects.filter(
+            cost_center__path__startswith=self.path
+        ).values(
+            t_date=F("purchase_date"),
+            t_name=ExpressionWrapper(
+                Concat(F("item__name"), Value(" x"), F("quantity")),
+                output_field=CharField(),
+            ),
+            t_cost_center=F("cost_center__name"),
+            t_cost_center_id=F("cost_center__id"),
+            t_price=-F("actual_price"),
+            t_href=ExpressionWrapper(
+                Concat(Value("/purchases/"), F("pk")), output_field=CharField()
+            ),
+        )
+
+        fundings = Funding.objects.filter(
+            cost_center__path__startswith=self.path
+        ).values(
+            t_date=F("funding_date"),
+            t_name=F("name"),
+            t_cost_center=F("cost_center__name"),
+            t_cost_center_id=F("cost_center__id"),
+            t_price=F("credit"),
+            t_href=ExpressionWrapper(
+                Concat(Value("/fundings/"), F("pk")), output_field=CharField()
+            ),
+        )
+
+        raw_rows = purchases.union(fundings).order_by("t_date")
+
+        # Calculate a cumulative sum
+        csum = 0
+        for r in raw_rows:
+            csum += r["t_price"]
+            yield TransactionRow(
+                date=r["t_date"],
+                name=r["t_name"],
+                cost_center=r["t_cost_center"],
+                cost_center_id=r["t_cost_center_id"],
+                price=r["t_price"],
+                href=r["t_href"],
+                balance=csum,
+            )
+
+
+class TransactionRow(NamedTuple):
+    date: datetime
+    name: str
+    cost_center: str
+    cost_center_id: int
+    price: float
+    href: str
+    balance: float
