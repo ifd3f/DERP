@@ -1,4 +1,4 @@
-from typing import Iterable, NamedTuple
+from typing import List, Iterable, NamedTuple
 from datetime import datetime
 
 from django.conf import settings
@@ -104,6 +104,20 @@ class CostCenter(models.Model):
 
     def __repr__(self):
         return f"Cost Center {self.name} ({self.id})"
+
+    def iter_upwards(self) -> Iterable['CostCenter']:
+        """
+        Iterator that goes upwards, starting from this node.
+        """
+        n = self
+        while n is not None:
+            yield n
+            n = n.parent
+
+    def nav_path(self) -> List['CostCenter']:
+        path = list(self.iter_upwards())
+        path.reverse()
+        return path
 
     def query_balance_sheet(self) -> Iterable['TransactionRow']:
         """

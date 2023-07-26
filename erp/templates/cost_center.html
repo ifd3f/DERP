@@ -1,5 +1,19 @@
 {% extends "base_standard.html" %}
 
+{% block top_nav %}
+    <nav>
+        <ul>
+            {% for p in cost_center.nav_path %}
+                {% if p == cost_center %}
+                <li>{{ p.name }}</li>
+                {% else %}
+                <li><a href="/cost-centers/{{ p.id }}">{{ p.name }}</a></li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </nav>
+{% endblock %}
+
 {% block content %}
     <div>
         <h2>Children</h2>

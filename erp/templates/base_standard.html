@@ -4,6 +4,7 @@
         <title>DERP - {{ page_title }}</title>
     </head>
     <body>
+        {% block top_nav %}{% endblock %}
         <h1>{{ page_title }}</h1>
         {% block content %}{% endblock %}
     </body>
