@@ -1,6 +1,7 @@
+from django.http import Http404, HttpRequest
 from django.shortcuts import render
-from django.http import Http404, HttpRequest, HttpResponse
-from .models import CostCenter, Purchase, Funding
+
+from .models import CostCenter
 
 
 def home(request: HttpRequest):

@@ -9,6 +9,8 @@ from computedfields.models import (
     precomputed,
     update_computedfields,
 )
+from django.db.models import F, Value, ExpressionWrapper, CharField, Sum
+from django.db.models.functions import Concat
 
 
 MAX_NAME_LENGTH = 64
@@ -87,7 +89,7 @@ class CostCenter(models.Model):
         # Otherwise, we already know the ID and must update child paths.
         with transaction.atomic():
             visited = []
-            nodes = [(self, self.parent.path if self.parent else '/')]
+            nodes = [(self, self.parent.path if self.parent else "/")]
             while nodes:
                 n, parent_path = nodes[-1]
                 nodes.pop()
@@ -105,7 +107,7 @@ class CostCenter(models.Model):
     def __repr__(self):
         return f"Cost Center {self.name} ({self.id})"
 
-    def iter_upwards(self) -> Iterable['CostCenter']:
+    def iter_upwards(self) -> Iterable["CostCenter"]:
         """
         Iterator that goes upwards, starting from this node.
         """
@@ -114,23 +116,33 @@ class CostCenter(models.Model):
             yield n
             n = n.parent
 
-    def nav_path(self) -> List['CostCenter']:
+    def nav_path(self) -> List["CostCenter"]:
         path = list(self.iter_upwards())
         path.reverse()
         return path
 
-    def query_balance_sheet(self) -> Iterable['TransactionRow']:
+    @property
+    def total_balance(self) -> float:
+        return (
+            self.recursive_fundings.aggregate(b=Sum("credit"))["b"]
+            - self.recursive_purchases.aggregate(b=Sum("actual_price"))["b"]
+        )
+
+    @property
+    def recursive_purchases(self):
+        return Purchase.objects.filter(cost_center__path__startswith=self.path)
+
+    @property
+    def recursive_fundings(self):
+        return Funding.objects.filter(cost_center__path__startswith=self.path)
+
+    def query_balance_sheet(self) -> Iterable["TransactionRow"]:
         """
         Returns the balance sheet for all transactions in
         this cost center and all of its children.
         """
 
-        from django.db.models import F, Value, ExpressionWrapper, CharField, Sum
-        from django.db.models.functions import Concat
-
-        purchases = Purchase.objects.filter(
-            cost_center__path__startswith=self.path
-        ).values(
+        purchases = self.recursive_purchases.values(
             t_date=F("purchase_date"),
             t_name=ExpressionWrapper(
                 Concat(F("item__name"), Value(" x"), F("quantity")),
@@ -144,9 +156,7 @@ class CostCenter(models.Model):
             ),
         )
 
-        fundings = Funding.objects.filter(
-            cost_center__path__startswith=self.path
-        ).values(
+        fundings = self.recursive_fundings.values(
             t_date=F("funding_date"),
             t_name=F("name"),
             t_cost_center=F("cost_center__name"),
