@@ -1,5 +1,6 @@
 from typing import List, Iterable, NamedTuple
 from datetime import datetime
+from decimal import Decimal
 
 from django.conf import settings
 from django.db import models, transaction
@@ -25,8 +26,8 @@ class Purchase(models.Model):
 
     item = models.ForeignKey("ItemKind", on_delete=models.PROTECT)
 
-    quantity = models.FloatField()
-    actual_price = models.FloatField()
+    quantity = models.DecimalField(max_digits=12, decimal_places=2)
+    actual_price = models.DecimalField(max_digits=12, decimal_places=2)
     supplier = models.URLField()
 
     cost_center = models.ForeignKey("CostCenter", null=False, on_delete=models.PROTECT)
@@ -44,7 +45,7 @@ class Funding(models.Model):
     name = models.CharField(max_length=MAX_NAME_LENGTH)
     cost_center = models.ForeignKey("CostCenter", null=False, on_delete=models.PROTECT)
     funding_date = models.DateTimeField()
-    credit = models.FloatField()
+    credit = models.DecimalField(max_digits=12, decimal_places=2)
 
 
 class ItemKind(models.Model):
@@ -170,7 +171,7 @@ class CostCenter(models.Model):
         raw_rows = purchases.union(fundings).order_by("t_date")
 
         # Calculate a cumulative sum
-        csum = 0
+        csum = Decimal(0)
         for r in raw_rows:
             csum += r["t_price"]
             yield TransactionRow(

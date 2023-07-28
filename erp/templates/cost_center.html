@@ -18,7 +18,7 @@
 
 {% block content %}
     <div>
-        <p>Balance: {{ cost_center.total_balance }}</p>
+        <p>Balance: {{ cost_center.total_balance | floatformat:2 }}</p>
     </div>
 
     <div>
