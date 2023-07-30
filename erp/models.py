@@ -24,11 +24,12 @@ class Purchase(models.Model):
 
     purchase_date = models.DateTimeField()
 
+    comment = models.CharField(max_length=MAX_NAME_LENGTH)
     item = models.ForeignKey("ItemKind", on_delete=models.PROTECT)
 
     quantity = models.DecimalField(max_digits=12, decimal_places=2)
     actual_price = models.DecimalField(max_digits=12, decimal_places=2)
-    supplier = models.URLField()
+    supplier = models.URLField(null=True)
 
     cost_center = models.ForeignKey("CostCenter", null=False, on_delete=models.PROTECT)
 
@@ -47,6 +48,9 @@ class Funding(models.Model):
     funding_date = models.DateTimeField()
     credit = models.DecimalField(max_digits=12, decimal_places=2)
 
+    def __str__(self) -> str:
+        return self.name
+
 
 class ItemKind(models.Model):
     """
@@ -55,6 +59,9 @@ class ItemKind(models.Model):
 
     name = models.CharField(max_length=MAX_NAME_LENGTH)
     description = models.TextField()
+
+    def __str__(self) -> str:
+        return self.name
 
 
 class CostCenter(models.Model):
@@ -104,6 +111,9 @@ class CostCenter(models.Model):
             for n in visited:
                 print(n, n.path)
                 models.Model.save(n, force_update=True)
+
+    def __str__(self) -> str:
+        return self.name
 
     def __repr__(self):
         return f"Cost Center {self.name} ({self.id})"

@@ -1,5 +1,7 @@
-from django.http import Http404, HttpRequest
+from django.http import Http404, HttpRequest, HttpResponseRedirect
 from django.shortcuts import render
+
+from erp.forms import PurchaseForm
 
 from .models import CostCenter
 
@@ -26,3 +28,16 @@ def cost_center(request: HttpRequest, i: int):
         "cost_center.html",
         {"page_title": cc.name, "cost_center": cc, "transactions": transactions},
     )
+
+
+def create_purchase(request: HttpRequest):
+    if request.method == "POST":
+        form = PurchaseForm(request.POST)
+
+        if form.is_valid():
+            return HttpResponseRedirect("/purchases")
+
+    else:
+        form = PurchaseForm()
+
+    return render(request, "create_purchase.html", {'page_title': 'Create purchase', "form": form})
