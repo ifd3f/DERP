@@ -1,0 +1,52 @@
+{% extends "base_standard.html" %} {% block content %}
+<table class="table">
+  <tr>
+    <th>Item</th>
+    <td>{{ purchase.item }}</td>
+  </tr>
+  <tr>
+    <th>Quantity</th>
+    <td>{{ purchase.quantity }}</td>
+  </tr>
+  <tr>
+    <th>Total Price</th>
+    <td>${{ purchase.actual_price }}</td>
+  </tr>
+  <tr>
+    <th>Cost Center</th>
+    <td>
+      <a href="{{ purchase.cost_center.url }}">{{ purchase.cost_center }}</a>
+    </td>
+  </tr>
+  <tr>
+    <th>Supplier</th>
+    {% if purchase.supplier %}
+    <td>
+      <a href="{{ purchase.supplier }}">{{ purchase.supplier }}</a>
+    </td>
+    {% else %}
+    <td>-</td>
+    {% endif %}
+  </tr>
+  <tr>
+    <th>Comment</th>
+    {% if purchase.comment %}
+    <td>{{ purchase.comment }}</td>
+    {% else %}
+    <td>-</td>
+    {% endif %}
+  </tr>
+  <tr>
+    <th>Purchaser</th>
+    <td>{{ purchase.purchaser }}</td>
+  </tr>
+  <tr>
+    <th>Created</th>
+    <td>{{ purchase.create_date }}</td>
+  </tr>
+  <tr>
+    <th>Last updated</th>
+    <td>{{ purchase.last_update_date }}</td>
+  </tr>
+</table>
+{% endblock %}

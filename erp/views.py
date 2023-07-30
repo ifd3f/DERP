@@ -1,9 +1,11 @@
+from datetime import datetime, timezone
+from django.db import transaction
 from django.http import Http404, HttpRequest, HttpResponseRedirect
 from django.shortcuts import render
 
 from erp.forms import PurchaseForm
 
-from .models import CostCenter
+from .models import CostCenter, Purchase
 
 
 def home(request: HttpRequest):
@@ -30,14 +32,33 @@ def cost_center(request: HttpRequest, i: int):
     )
 
 
+@transaction.atomic
 def create_purchase(request: HttpRequest):
     if request.method == "POST":
         form = PurchaseForm(request.POST)
 
         if form.is_valid():
-            return HttpResponseRedirect("/purchases")
+            purchase = form.save()
+            return HttpResponseRedirect(purchase.url)
 
     else:
-        form = PurchaseForm()
+        form = PurchaseForm(
+            initial={"purchase_date": datetime.now(tz=timezone.utc), "quantity": 1}
+        )
 
-    return render(request, "create_purchase.html", {'page_title': 'Create purchase', "form": form})
+    return render(
+        request, "create_purchase.html", {"page_title": "Create purchase", "form": form}
+    )
+
+
+def view_purchase(request: HttpRequest, i: int):
+    try:
+        purchase = Purchase.objects.get(id=i)
+    except PurchaseForm.DoesNotExist:
+        raise Http404
+
+    return render(
+        request,
+        "view_purchase.html",
+        {"page_title": f"Purchase: {purchase}", "purchase": purchase},
+    )

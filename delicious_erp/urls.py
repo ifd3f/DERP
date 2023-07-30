@@ -23,5 +23,6 @@ urlpatterns = [
     path('', erp.home),
     path('cost-centers/<int:i>', erp.cost_center),
     path('purchases/create', erp.create_purchase),
+    path('purchases/<int:i>', erp.view_purchase),
     path('admin/', admin.site.urls),
 ]
