@@ -168,7 +168,7 @@ class CostCenter(models.Model):
     def recursive_fundings(self):
         return Funding.objects.filter(cost_center__path__startswith=self.path)
 
-    def query_balance_sheet(self) -> Iterable["TransactionRow"]:
+    def query_balance_sheet(self):
         """
         Returns the balance sheet for all transactions in
         this cost center and all of its children.
@@ -199,28 +199,13 @@ class CostCenter(models.Model):
             ),
         )
 
-        raw_rows = purchases.union(fundings).order_by("t_date")
-
-        # Calculate a cumulative sum
-        csum = Decimal(0)
-        for r in raw_rows:
-            csum += r["t_price"]
-            yield TransactionRow(
-                date=r["t_date"],
-                name=r["t_name"],
-                cost_center=r["t_cost_center"],
-                cost_center_id=r["t_cost_center_id"],
-                price=r["t_price"],
-                href=r["t_href"],
-                balance=csum,
-            )
+        return purchases.union(fundings)
 
 
 class TransactionRow(NamedTuple):
-    date: datetime
-    name: str
-    cost_center: str
-    cost_center_id: int
-    price: float
-    href: str
-    balance: float
+    t_date: datetime
+    t_name: str
+    t_cost_center: str
+    t_cost_center_id: int
+    t_price: float
+    t_href: str

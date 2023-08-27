@@ -6,17 +6,15 @@
                 <th style="text-align: center;">Name</th>
                 <th style="text-align: center;">Cost Center</th>
                 <th style="text-align: right;">Price</th>
-                <th style="text-align: right;">Balance</th>
             </tr>
         </thead>
         <tbody>
             {% for t in transactions %}
                 <tr>
-                    <td>{{ t.date }}</td>
-                    <td style="text-align: center;"><a href="{{ t.href | urlencode }}">{{ t.name }}</a></td>
-                    <td style="text-align: center;"><a href="/cost-centers/{{ t.cost_center_id }}">{{ t.cost_center }}</a></td>
-                    <td style="text-align: right;">{{ t.price | floatformat:2 }}</td>
-                    <td style="text-align: right;">{{ t.balance | floatformat:2 }}</td>
+                    <td>{{ t.t_date }}</td>
+                    <td style="text-align: center;"><a href="{{ t.t_href | urlencode }}">{{ t.t_name }}</a></td>
+                    <td style="text-align: center;"><a href="/cost-centers/{{ t.t_cost_center_id }}">{{ t.t_cost_center }}</a></td>
+                    <td style="text-align: right;">{{ t.t_price | floatformat:2 }}</td>
                 </tr>
             {% endfor %}
         </tbody>

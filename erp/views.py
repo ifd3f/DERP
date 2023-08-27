@@ -26,7 +26,7 @@ def cost_center(request: HttpRequest, i: int):
     except CostCenter.DoesNotExist:
         raise Http404
 
-    transactions = list(cc.query_balance_sheet())
+    transactions = cc.query_balance_sheet().order_by("t_date")
 
     return render(
         request,
