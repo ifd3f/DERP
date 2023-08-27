@@ -1,23 +1,29 @@
-from datetime import datetime, timezone
-from django.db import transaction
-from django.http import Http404, HttpRequest, HttpResponseRedirect
-from django.shortcuts import render
+from django.http import Http404, HttpRequest, HttpResponse
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView
-from django.views.generic.edit import FormView, CreateView, DeleteView, UpdateView
-
-from erp.forms import PurchaseForm
+from django.views.generic import ListView, CreateView, DetailView
+from django.views.generic.edit import DeleteView, UpdateView
 
 from .models import CostCenter, Purchase
 
 
-def home(request: HttpRequest):
+def home(request: HttpRequest) -> HttpRequest:
     root_cost_centers = CostCenter.objects.filter(parent__isnull=True)
     return render(
         request,
         "home.html",
         {"page_title": "Home", "root_cost_centers": root_cost_centers},
     )
+
+
+def resolve_id(request: HttpRequest, id: str) -> HttpResponse:
+    match id[:1].upper():
+        case "P":
+            return redirect(f"/purchases/{id[1:]}")
+        case "F":
+            return redirect(f"/fundings/{id[1:]}")
+        case _:
+            return Http404("Could not resolve ID")
 
 
 class CostCenterListView(ListView):

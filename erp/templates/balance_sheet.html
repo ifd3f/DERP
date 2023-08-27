@@ -2,6 +2,7 @@
     <table class="datatable">
         <thead>
             <tr>
+                <th>#</th>
                 <th>Date</th>
                 <th style="text-align: center;">Name</th>
                 <th style="text-align: center;">Cost Center</th>
@@ -11,8 +12,9 @@
         <tbody>
             {% for t in transactions %}
                 <tr>
+                    <td><a href="{{ t.t_href | urlencode }}">{{ t.t_id }}</a></td>
                     <td>{{ t.t_date }}</td>
-                    <td style="text-align: center;"><a href="{{ t.t_href | urlencode }}">{{ t.t_name }}</a></td>
+                    <td style="text-align: center;">{{ t.t_name }}</td>
                     <td style="text-align: center;"><a href="/cost-centers/{{ t.t_cost_center_id }}">{{ t.t_cost_center }}</a></td>
                     <td style="text-align: right;">{{ t.t_price | floatformat:2 }}</td>
                 </tr>

@@ -28,6 +28,7 @@ urlpatterns = (
         path("cost-centers/<int:pk>", erp.CostCenterDetailView.as_view()),
         path("purchases/", erp.PurchasesListView.as_view()),
         path("purchases/<int:pk>", erp.PurchaseDetailView.as_view()),
+        path("s/<id>", erp.resolve_id),
         path("admin/", admin.site.urls),
     ]
     + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

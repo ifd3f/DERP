@@ -1,6 +1,10 @@
 {% extends "base_standard.html" %} {% block content %}
 <table class="table">
   <tr>
+    <th>ID</th>
+    <td>P{{ purchase.id }}</td>
+  </tr>
+  <tr>
     <th>Item</th>
     <td>{{ purchase.item }}</td>
   </tr>

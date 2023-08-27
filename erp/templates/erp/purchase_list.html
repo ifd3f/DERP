@@ -15,7 +15,7 @@
             <tbody>
                 {% for p in purchases %}
                     <tr>
-                        <td style="text-align: right;"><a href="/purchases/{{ p.id }}">{{ p.id }}</a></td>
+                        <td style="text-align: right;"><a href="/purchases/{{ p.id }}">P{{ p.id }}</a></td>
                         <td>{{ p.purchase_date }}</td>
                         <td style="text-align: center;"><a href="{{ p.url }}">{{ p }}</a></td>
                         <td style="text-align: center;"><a href="{{ p.cost_center.url }}">{{ p.cost_center }}</a></td>

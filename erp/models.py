@@ -4,12 +4,6 @@ from decimal import Decimal
 
 from django.conf import settings
 from django.db import models, transaction
-from computedfields.models import (
-    ComputedFieldsModel,
-    computed,
-    precomputed,
-    update_computedfields,
-)
 from django.db.models import F, Value, ExpressionWrapper, CharField, Sum
 from django.db.models.functions import Concat
 
@@ -24,12 +18,12 @@ class Purchase(models.Model):
 
     purchase_date = models.DateTimeField()
 
-    comment = models.CharField(max_length=MAX_NAME_LENGTH, null=False, default='')
+    comment = models.CharField(max_length=MAX_NAME_LENGTH, null=False, default="")
     item = models.ForeignKey("ItemKind", on_delete=models.PROTECT)
 
     quantity = models.DecimalField(max_digits=12, decimal_places=2)
     actual_price = models.DecimalField(max_digits=12, decimal_places=2)
-    supplier = models.URLField(null=False, default='')
+    supplier = models.URLField(null=False, default="")
 
     cost_center = models.ForeignKey("CostCenter", null=False, on_delete=models.PROTECT)
 
@@ -41,8 +35,8 @@ class Purchase(models.Model):
     last_update_date = models.DateTimeField(auto_now=True)
 
     def __str__(self) -> str:
-        return self.comment or f'{self.item.name} x{self.quantity}'
-    
+        return self.comment or f"{self.item.name} x{self.quantity}"
+
     @property
     def url(self) -> str:
         return f"/purchases/{self.id}"
@@ -75,7 +69,7 @@ class ItemKind(models.Model):
 
     def __str__(self) -> str:
         return self.name
-    
+
     @property
     def url(self) -> str:
         return f"/item-kinds/{self.id}"
@@ -128,7 +122,7 @@ class CostCenter(models.Model):
             for n in visited:
                 print(n, n.path)
                 models.Model.save(n, force_update=True)
-    
+
     @property
     def url(self) -> str:
         return f"/cost-centers/{self.id}"
@@ -175,6 +169,9 @@ class CostCenter(models.Model):
         """
 
         purchases = self.recursive_purchases.values(
+            t_id=ExpressionWrapper(
+                Concat(Value("P"), F("pk")), output_field=CharField()
+            ),
             t_date=F("purchase_date"),
             t_name=ExpressionWrapper(
                 Concat(F("item__name"), Value(" x"), F("quantity")),
@@ -189,6 +186,9 @@ class CostCenter(models.Model):
         )
 
         fundings = self.recursive_fundings.values(
+            t_id=ExpressionWrapper(
+                Concat(Value("F"), F("pk")), output_field=CharField()
+            ),
             t_date=F("funding_date"),
             t_name=F("name"),
             t_cost_center=F("cost_center__name"),
