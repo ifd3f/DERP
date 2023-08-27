@@ -1,0 +1,9 @@
+{% extends "base_standard.html" %}
+
+{% block content %}
+    {% if root_cost_centers %}
+        {% include "costcenter_tree.html" with cost_centers=root_cost_centers only %}
+    {% else %}
+        <p>No cost centers found.</p>
+    {% endif %}
+{% endblock %}

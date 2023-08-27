@@ -24,7 +24,8 @@ import erp.views as erp
 urlpatterns = (
     [
         path("", erp.home),
-        path("cost-centers/<int:i>", erp.cost_center),
+        path("cost-centers", erp.CostCenterListView.as_view()),
+        path("cost-centers/<int:pk>", erp.CostCenterDetailView.as_view()),
         path("purchases/", erp.PurchasesListView.as_view()),
         path("purchases/<int:pk>", erp.PurchaseDetailView.as_view()),
         path("admin/", admin.site.urls),

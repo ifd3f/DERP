@@ -1,0 +1,11 @@
+<ul>
+    {% for cc in cost_centers %}
+        <li>
+            <a href="/cost-centers/{{ cc.id }}">{{ cc.name }}</a> ({{ cc.total_balance | floatformat:2 }})
+
+            {% if cc.children.all|length %}
+                {% include "costcenter_tree.html" with cost_centers=cc.children.all %}
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>

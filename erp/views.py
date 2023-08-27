@@ -20,19 +20,36 @@ def home(request: HttpRequest):
     )
 
 
-def cost_center(request: HttpRequest, i: int):
-    try:
-        cc = CostCenter.objects.get(id=i)
-    except CostCenter.DoesNotExist:
-        raise Http404
+class CostCenterListView(ListView):
+    model = CostCenter
+    context_object_name = "root_cost_centers"
+    queryset = CostCenter.objects.filter(parent__isnull=True)
 
-    transactions = cc.query_balance_sheet().order_by("t_date")
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["page_title"] = f"Cost Centers"
+        return context
 
-    return render(
-        request,
-        "cost_center.html",
-        {"page_title": cc.name, "cost_center": cc, "transactions": transactions},
-    )
+
+class CostCenterDetailView(DetailView):
+    model = CostCenter
+    context_object_name = "cost_center"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["transactions"] = self.object.query_balance_sheet().order_by("t_date")
+        context["page_title"] = f"Cost Center: {self.object.name}"
+        return context
+
+
+class PurchaseDetailView(DetailView):
+    model = Purchase
+    context_object_name = "purchase"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["page_title"] = f"Purchase: {self.object}"
+        return context
 
 
 class PurchasesListView(ListView):
