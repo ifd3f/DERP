@@ -2,6 +2,9 @@ from datetime import datetime, timezone
 from django.db import transaction
 from django.http import Http404, HttpRequest, HttpResponseRedirect
 from django.shortcuts import render
+from django.urls import reverse_lazy
+from django.views.generic import ListView, DetailView
+from django.views.generic.edit import FormView, CreateView, DeleteView, UpdateView
 
 from erp.forms import PurchaseForm
 
@@ -32,33 +35,37 @@ def cost_center(request: HttpRequest, i: int):
     )
 
 
-@transaction.atomic
-def create_purchase(request: HttpRequest):
-    if request.method == "POST":
-        form = PurchaseForm(request.POST)
+class PurchasesListView(ListView):
+    model = Purchase
+    context_object_name = "purchases"
+    queryset = Purchase.objects.order_by("-purchase_date")
 
-        if form.is_valid():
-            purchase = form.save()
-            return HttpResponseRedirect(purchase.url)
-
-    else:
-        form = PurchaseForm(
-            initial={"purchase_date": datetime.now(tz=timezone.utc), "quantity": 1}
-        )
-
-    return render(
-        request, "create_purchase.html", {"page_title": "Create purchase", "form": form}
-    )
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["page_title"] = "Purchases"
+        return context
 
 
-def view_purchase(request: HttpRequest, i: int):
-    try:
-        purchase = Purchase.objects.get(id=i)
-    except PurchaseForm.DoesNotExist:
-        raise Http404
+class PurchaseDetailView(DetailView):
+    model = Purchase
+    context_object_name = "purchase"
 
-    return render(
-        request,
-        "view_purchase.html",
-        {"page_title": f"Purchase: {purchase}", "purchase": purchase},
-    )
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["page_title"] = f"Purchase: {self.object}"
+        return context
+
+
+class PurchaseCreateView(CreateView):
+    model = Purchase
+    fields = ["name"]
+
+
+class PurchaseUpdateView(UpdateView):
+    model = Purchase
+    fields = ["name"]
+
+
+class PurchaseDeleteView(DeleteView):
+    model = Purchase
+    success_url = reverse_lazy("purchases")

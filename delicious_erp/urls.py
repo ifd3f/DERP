@@ -15,14 +15,20 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
 
 import erp.views as erp
 
 
-urlpatterns = [
-    path('', erp.home),
-    path('cost-centers/<int:i>', erp.cost_center),
-    path('purchases/create', erp.create_purchase),
-    path('purchases/<int:i>', erp.view_purchase),
-    path('admin/', admin.site.urls),
-]
+urlpatterns = (
+    [
+        path("", erp.home),
+        path("cost-centers/<int:i>", erp.cost_center),
+        path("purchases/", erp.PurchasesListView.as_view()),
+        path("purchases/<int:pk>", erp.PurchaseDetailView.as_view()),
+        path("admin/", admin.site.urls),
+    ]
+    + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+)
