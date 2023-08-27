@@ -1,0 +1,53 @@
+body {
+  font-family: sans-serif;
+}
+
+.container {
+  max-width: 768px;
+  padding-left: 30px;
+  padding-right: 30px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+ol.nav-path {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+ol.nav-path > li {
+  display: inline;
+}
+
+ol.nav-path > li::before {
+  content: "/ ";
+}
+
+table.datatable {
+  width: 100%;
+  border: 2px solid lightgray;
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+table.datatable thead {
+  position: sticky;
+  top: 0;
+  background-color: white;
+  box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+}
+
+table.datatable thead th {
+  padding: 3px;
+}
+
+table.datatable td {
+  border: 1px solid lightgray;
+  padding: 1px;
+  margin: 0;
+}
+
+table.datatable tr {
+  padding: 0;
+}

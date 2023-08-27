@@ -2,22 +2,24 @@
 
 {% block top_nav %}
     <nav>
-        <ul class="nav">
+        <ol class="nav-path">
+            <li><a href="/cost-centers">Cost centers</a></li>
             {% for p in cost_center.nav_path %}
                 {% if p == cost_center %}
-                    <li class="nav-item nav-link">{{ p.name }}</li>
+                    <li>{{ p.name }}</li>
                 {% else %}
-                    <li class="nav-item">
-                        <a href="/cost-centers/{{ p.id }}" class="nav-link">{{ p.name }}</a>
+                    <li>
+                        <a href="/cost-centers/{{ p.id }}">{{ p.name }}</a>
                     </li>
                 {% endif %}
             {% endfor %}
-        </ul>
+        </ol>
     </nav>
 {% endblock %}
 
 {% block content %}
     <div>
+        <label></label>
         <p>Balance: {{ cost_center.total_balance | floatformat:2 }}</p>
     </div>
 
