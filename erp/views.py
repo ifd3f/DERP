@@ -4,7 +4,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView
 from django.views.generic.edit import DeleteView, UpdateView
 
-from .models import CostCenter, Purchase
+from .models import CostCenter, Funding, Purchase
 
 
 def home(request: HttpRequest) -> HttpRequest:
@@ -69,16 +69,6 @@ class PurchasesListView(ListView):
         return context
 
 
-class PurchaseDetailView(DetailView):
-    model = Purchase
-    context_object_name = "purchase"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["page_title"] = f"Purchase: {self.object}"
-        return context
-
-
 class PurchaseCreateView(CreateView):
     model = Purchase
     fields = ["name"]
@@ -92,3 +82,23 @@ class PurchaseUpdateView(UpdateView):
 class PurchaseDeleteView(DeleteView):
     model = Purchase
     success_url = reverse_lazy("purchases")
+
+class FundingDetailView(DetailView):
+    model = Funding
+    context_object_name = "funding"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["page_title"] = f"Funding: {self.object}"
+        return context
+
+
+class FundingsListView(ListView):
+    model = Funding
+    context_object_name = "fundings"
+    queryset = Funding.objects.order_by("-funding_date")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["page_title"] = "Fundings"
+        return context

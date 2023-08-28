@@ -51,6 +51,7 @@ class Funding(models.Model):
     cost_center = models.ForeignKey("CostCenter", null=False, on_delete=models.PROTECT)
     funding_date = models.DateTimeField()
     credit = models.DecimalField(max_digits=12, decimal_places=2)
+    comment = models.CharField(max_length=MAX_NAME_LENGTH, null=False, default="")
 
     create_date = models.DateTimeField(auto_now_add=True)
     last_update_date = models.DateTimeField(auto_now=True)

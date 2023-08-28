@@ -1,0 +1,42 @@
+{% extends "base_standard.html" %} {% block content %}
+<table class="table">
+  <tr>
+    <th>ID</th>
+    <td>F{{ funding.id }}</td>
+  </tr>
+  <tr>
+    <th>Funding</th>
+    <td>{{ funding.name }}</td>
+  </tr>
+  <tr>
+    <th>Credit</th>
+    <td>${{ funding.credit }}</td>
+  </tr>
+  <tr>
+    <th>Cost Center</th>
+    <td>
+      <a href="{{ funding.cost_center.url }}">{{ funding.cost_center }}</a>
+    </td>
+  </tr>
+  <tr>
+    <th>Comment</th>
+    {% if funding.comment %}
+    <td>{{ funding.comment }}</td>
+    {% else %}
+    <td>-</td>
+    {% endif %}
+  </tr>
+  <tr>
+    <th>Effective date</th>
+    <td>{{ funding.funding_date }}</td>
+  </tr>
+  <tr>
+    <th>Created</th>
+    <td>{{ funding.create_date }}</td>
+  </tr>
+  <tr>
+    <th>Last updated</th>
+    <td>{{ funding.last_update_date }}</td>
+  </tr>
+</table>
+{% endblock %}
