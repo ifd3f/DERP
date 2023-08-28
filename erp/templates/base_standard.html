@@ -13,10 +13,22 @@
         {% block head %}{% endblock %}
     </head>
     <body>
-        <div class="container">
-            {% block top_nav %}{% endblock %}
-            <h1>{{ page_title }}</h1>
-            {% block content %}{% endblock %}
+        <div class="outer">
+            <nav class="main-navbar">
+                <h1><a href="/">DERP</a></h1>
+                <a href="/login">Log in</a>
+                <ul class="navmenu">
+                    <li><a href="/cost-centers">Cost centers</a></li>
+                    <li><a href="/purchases">Purchases</a></li>
+                    <li><a href="/fundings">Fundings</a></li>
+                </ul>
+            </nav>
+
+            <main class="content">
+                {% block top_nav %}{% endblock %}
+                <h1>{{ page_title }}</h1>
+                {% block content %}{% endblock %}
+            </main>
         </div>
     </body>
 </html>

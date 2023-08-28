@@ -6,7 +6,7 @@
             <thead>
                 <tr>
                     <th style="text-align: right;">#</th>
-                    <th>Funding Date</th>
+                    <th>Date</th>
                     <th style="text-align: center;">Name</th>
                     <th style="text-align: center;">Cost Center</th>
                     <th style="text-align: right;">Price</th>
@@ -16,8 +16,8 @@
                 {% for f in fundings %}
                     <tr>
                         <td style="text-align: right;"><a href="/fundings/{{ f.id }}">F{{ f.id }}</a></td>
-                        <td>{{ f.funding_date }}</td>
-                        <td style="text-align: center;"><a href="{{ f.url }}">{{ f }}</a></td>
+                        <td>{{ f.funding_date | date:"d/m/y" }}</td>
+                        <td style="text-align: center;">{{ f }}</td>
                         <td style="text-align: center;"><a href="{{ f.cost_center.url }}">{{ f.cost_center }}</a></td>
                         <td style="text-align: right;">{{ f.credit | floatformat:2 }}</td>
                     </tr>

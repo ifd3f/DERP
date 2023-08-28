@@ -6,7 +6,7 @@
             <thead>
                 <tr>
                     <th style="text-align: right;">#</th>
-                    <th>Purchase Date</th>
+                    <th>Date</th>
                     <th style="text-align: center;">Name</th>
                     <th style="text-align: center;">Cost Center</th>
                     <th style="text-align: right;">Price</th>
@@ -16,7 +16,7 @@
                 {% for p in purchases %}
                     <tr>
                         <td style="text-align: right;"><a href="/purchases/{{ p.id }}">P{{ p.id }}</a></td>
-                        <td>{{ p.purchase_date }}</td>
+                        <td>{{ p.purchase_date | date:"d/m/y" }}</td>
                         <td style="text-align: center;"><a href="{{ p.url }}">{{ p }}</a></td>
                         <td style="text-align: center;"><a href="{{ p.cost_center.url }}">{{ p.cost_center }}</a></td>
                         <td style="text-align: right;">{{ p.actual_price | floatformat:2 }}</td>
