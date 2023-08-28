@@ -1,6 +1,8 @@
 {% extends "base_standard.html" %}
 
 {% block content %}
+    <a href="/purchases/create">Create purchase</a>
+
     {% if purchases %}
         <table class="datatable">
             <thead>
@@ -15,11 +17,11 @@
             <tbody>
                 {% for p in purchases %}
                     <tr>
-                        <td style="text-align: right;"><a href="/purchases/{{ p.id }}">P{{ p.id }}</a></td>
-                        <td>{{ p.purchase_date | date:"d/m/y" }}</td>
-                        <td style="text-align: center;"><a href="{{ p.url }}">{{ p }}</a></td>
-                        <td style="text-align: center;"><a href="{{ p.cost_center.url }}">{{ p.cost_center }}</a></td>
-                        <td style="text-align: right;">{{ p.actual_price | floatformat:2 }}</td>
+                        <td style="text-align: right;"><a href="{{ p.get_absolute_url }}">P{{ p.id }}</a></td>
+                        <td>{{ p.purchase_date | date:"Y-m-d" }}</td>
+                        <td style="text-align: center;">{{ p }}</td>
+                        <td style="text-align: center;"><a href="{{ p.cost_center.get_absolute_url }}">{{ p.cost_center }}</a></td>
+                        <td style="text-align: right;">{{ p.total_price | floatformat:2 }}</td>
                     </tr>
                 {% endfor %}
             </tbody>

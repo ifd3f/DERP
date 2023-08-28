@@ -1,8 +1,11 @@
+from django import forms
 from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView
 from django.views.generic.edit import DeleteView, UpdateView
+
+from erp.forms import PurchaseCreateForm
 
 from .models import CostCenter, Funding, Purchase
 
@@ -71,7 +74,7 @@ class PurchasesListView(ListView):
 
 class PurchaseCreateView(CreateView):
     model = Purchase
-    fields = ["name"]
+    form_class = PurchaseCreateForm
 
 
 class PurchaseUpdateView(UpdateView):
@@ -82,6 +85,7 @@ class PurchaseUpdateView(UpdateView):
 class PurchaseDeleteView(DeleteView):
     model = Purchase
     success_url = reverse_lazy("purchases")
+
 
 class FundingDetailView(DetailView):
     model = Funding

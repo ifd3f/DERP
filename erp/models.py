@@ -6,6 +6,7 @@ from django.conf import settings
 from django.db import models, transaction
 from django.db.models import F, Value, ExpressionWrapper, CharField, Sum
 from django.db.models.functions import Concat
+from django.urls import reverse
 
 
 MAX_NAME_LENGTH = 64
@@ -22,7 +23,7 @@ class Purchase(models.Model):
     item = models.ForeignKey("ItemKind", on_delete=models.PROTECT)
 
     quantity = models.DecimalField(max_digits=12, decimal_places=2)
-    actual_price = models.DecimalField(max_digits=12, decimal_places=2)
+    total_price = models.DecimalField(max_digits=12, decimal_places=2)
     supplier = models.URLField(null=False, default="")
 
     cost_center = models.ForeignKey("CostCenter", null=False, on_delete=models.PROTECT)
@@ -37,9 +38,8 @@ class Purchase(models.Model):
     def __str__(self) -> str:
         return self.comment or f"{self.item.name} x{self.quantity}"
 
-    @property
-    def url(self) -> str:
-        return f"/purchases/{self.id}"
+    def get_absolute_url(self) -> str:
+        return reverse('purchase', kwargs={'pk': self.id})
 
 
 class Funding(models.Model):
@@ -58,6 +58,9 @@ class Funding(models.Model):
 
     def __str__(self) -> str:
         return self.name
+
+    def get_absolute_url(self) -> str:
+        return reverse('funding', kwargs={'pk': self.id})
 
 
 class ItemKind(models.Model):
@@ -124,9 +127,8 @@ class CostCenter(models.Model):
                 print(n, n.path)
                 models.Model.save(n, force_update=True)
 
-    @property
-    def url(self) -> str:
-        return f"/cost-centers/{self.id}"
+    def get_absolute_url(self) -> str:
+        return reverse('cost-center', kwargs={'pk': self.id})
 
     def __str__(self) -> str:
         return self.name
@@ -152,7 +154,7 @@ class CostCenter(models.Model):
     def total_balance(self) -> float:
         return (
             self.recursive_fundings.aggregate(b=Sum("credit"))["b"]
-            - self.recursive_purchases.aggregate(b=Sum("actual_price"))["b"]
+            - self.recursive_purchases.aggregate(b=Sum("total_price"))["b"]
         )
 
     @property
@@ -180,7 +182,7 @@ class CostCenter(models.Model):
             ),
             t_cost_center=F("cost_center__name"),
             t_cost_center_id=F("cost_center__id"),
-            t_price=-F("actual_price"),
+            t_price=-F("total_price"),
             t_href=ExpressionWrapper(
                 Concat(Value("/purchases/"), F("pk")), output_field=CharField()
             ),

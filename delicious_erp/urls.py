@@ -25,11 +25,12 @@ urlpatterns = (
     [
         path("", erp.home),
         path("cost-centers", erp.CostCenterListView.as_view()),
-        path("cost-centers/<int:pk>", erp.CostCenterDetailView.as_view()),
+        path("cost-centers/<int:pk>", erp.CostCenterDetailView.as_view(), name='cost-center'),
         path("purchases", erp.PurchasesListView.as_view()),
-        path("purchases/<int:pk>", erp.PurchaseDetailView.as_view()),
+        path("purchases/<int:pk>", erp.PurchaseDetailView.as_view(), name='purchase'),
+        path("purchases/create", erp.PurchaseCreateView.as_view()),
         path("fundings", erp.FundingsListView.as_view()),
-        path("fundings/<int:pk>", erp.FundingDetailView.as_view()),
+        path("fundings/<int:pk>", erp.FundingDetailView.as_view(), name='funding'),
         path("s/<id>", erp.resolve_id),
         path("admin/", admin.site.urls),
     ]

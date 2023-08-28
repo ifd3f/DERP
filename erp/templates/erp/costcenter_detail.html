@@ -29,7 +29,7 @@
             {% if children %}
                 <ul>
                     {% for c in children %}
-                        <li><a href="/cost-centers/{{ c.id }}">{{ c.name }}</a></li>
+                        <li><a href="{{ c.get_absolute_url }}">{{ c.name }}</a></li>
                     {% endfor %}
                 </ul>
             {% else %}

@@ -14,12 +14,12 @@
   </tr>
   <tr>
     <th>Total Price</th>
-    <td>${{ purchase.actual_price }}</td>
+    <td>${{ purchase.total_price }}</td>
   </tr>
   <tr>
     <th>Cost Center</th>
     <td>
-      <a href="{{ purchase.cost_center.url }}">{{ purchase.cost_center }}</a>
+      <a href="{{ purchase.cost_center.get_absolute_url }}">{{ purchase.cost_center }}</a>
     </td>
   </tr>
   <tr>

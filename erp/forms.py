@@ -1,14 +1,15 @@
+from datetime import datetime
+from typing import Any, Dict
 from django import forms
 
 from .models import ItemKind, Purchase
 
 
-class PurchaseForm(forms.ModelForm):
-    template_name = "purchase_form.html"
-
+class PurchaseCreateForm(forms.ModelForm):
     item = forms.CharField()
     comment = forms.CharField(required=False)
     supplier = forms.URLField(required=False)
+    purchase_date = forms.DateTimeField(initial=datetime.now)
 
     def save(self, commit=True):
         purchase: Purchase = super().save(commit=False)
@@ -23,8 +24,10 @@ class PurchaseForm(forms.ModelForm):
     class Meta:
         model = Purchase
         fields = [
+            "comment",
+            "supplier",
             "purchase_date",
             "quantity",
-            "actual_price",
+            "total_price",
             "cost_center",
         ]

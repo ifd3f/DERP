@@ -21,7 +21,7 @@ def run():
             purchase_date=date,
             item=random.choice(iks),
             quantity=random.randint(1, 100),
-            actual_price=random.random() * 100,
+            total_price=random.random() * 100,
             supplier="https://example.com",
             cost_center=random.choice(ccs)
         )
